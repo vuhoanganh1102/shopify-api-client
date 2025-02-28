@@ -1,0 +1,21 @@
+{
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleNameMapper": {
+    "@app/shopify-api-client/(.*)": "<rootDir>/../libs/shopify-api-client/src/$1",
+    "@app/shopify-api-client": "<rootDir>/../libs/shopify-api-client/src",
+    "@app/mongo/(.*)": "<rootDir>/../libs/mongo/src/$1",
+    "@app/mongo": "<rootDir>/../libs/mongo/src",
+    "@app/facebook/(.*)": "<rootDir>/../libs/facebook/src/$1",
+    "@app/facebook": "<rootDir>/../libs/facebook/src"
+  }
+}
