@@ -2,7 +2,7 @@ import { Controller, Get, Req, Res } from '@nestjs/common';
 import { FacebookService } from './facebook.service';
 import { Request, Response } from 'express';
 
-@Controller()
+@Controller('facebook')
 export default class FacebookController {
   constructor(private readonly fbService: FacebookService) {}
 
