@@ -6,7 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MongoModule } from '@app/mongo';
 import { ProductModule } from './product/product.module';
 import { WebhookModule } from './webhook/webhook.module';
-import { FacebookModule } from '@app/facebook';
+import { FacebookModule } from './facebook/facebook.module';
+// import { FacebookModule } from '@app/facebook';
 
 @Module({
   imports: [

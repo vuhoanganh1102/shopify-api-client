@@ -25,23 +25,23 @@ export class WebhookController {
   async del(@Body() body: DelInterface) {
     return this.webhookService.webhookDeleteSub(body);
   }
-  @Get()
-  findAll() {
-    return this.webhookService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.webhookService.findAll();
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.webhookService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.webhookService.findOne(+id);
+  // }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWebhookDto: UpdateWebhookDto) {
-    return this.webhookService.update(+id, updateWebhookDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateWebhookDto: UpdateWebhookDto) {
+  //   return this.webhookService.update(+id, updateWebhookDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.webhookService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.webhookService.remove(+id);
+  // }
 }
