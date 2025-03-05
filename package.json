@@ -17,22 +17,36 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run -d ./libs/mysql/src/dataSource.ts",
+    "migration:create": "ts-node ./node_modules/typeorm/cli.js migration:create ./libs/mysql/src/migrations/migrations",
+    "migration:generate": "ts-node ./node_modules/typeorm/cli.js migration:generate ./libs/mysql/src/migrations/$npm_config_name -d ./libs/mysql/src/dataSource.ts",
+    "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert -d ./libs/mysql/src/dataSource.ts"
   },
   "dependencies": {
+    "@nestjs/bullmq": "^11.0.2",
+    "@nestjs/cache-manager": "^3.0.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/mongoose": "^11.0.1",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/schedule": "^5.0.1",
+    "@nestjs/typeorm": "^11.0.0",
     "@shopify/admin-api-client": "^1.0.6",
     "axios": "^1.8.1",
+    "bullmq": "^5.41.7",
+    "cache-manager": "^6.4.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "dotenv": "^16.4.7",
+    "moment-timezone": "^0.5.47",
     "mongoose": "^8.11.0",
+    "mysql2": "^3.12.0",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "typeorm": "^0.3.21"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -80,7 +94,12 @@
     "moduleNameMapper": {
       "^@app/shopify-api-client(|/.*)$": "<rootDir>/libs/shopify-api-client/src/$1",
       "^@app/mongo(|/.*)$": "<rootDir>/libs/mongo/src/$1",
-      "^@app/facebook(|/.*)$": "<rootDir>/libs/facebook/src/$1"
+      "^@app/facebook(|/.*)$": "<rootDir>/libs/facebook/src/$1",
+      "^@app/schedules(|/.*)$": "<rootDir>/libs/schedules/src/$1",
+      "^@app/queues(|/.*)$": "<rootDir>/libs/queues/src/$1",
+      "^@app/caching(|/.*)$": "<rootDir>/libs/caching/src/$1",
+      "^@app/helper(|/.*)$": "<rootDir>/libs/helper/src/$1",
+      "^@app/mysql(|/.*)$": "<rootDir>/libs/mysql/src/$1"
     }
   }
 }

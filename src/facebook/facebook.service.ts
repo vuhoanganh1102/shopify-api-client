@@ -102,8 +102,7 @@ export class FacebookService {
       );
 
       const accessToken = tokenResponse.data.access_token;
-      // const accessToken =
-      //   'EAAIZCGAqdmPcBOZCyMUlOgVhWl0XJneM2R4NUa3ZB6e7iNBu2KKet9cXY800Dcf9ORT6ZCDyaMQhlQIEzG2IZCkS1blBVt9zbWaboFjZCzaEcvIZB7fn7giz9w8ERODJGWTYXkJ8XhlukD7FoEe9XhzfVrZChdEzZAcpBsIlyWlcZA0dFHcLAvhmYZC5CZBSWZCZChQH3dhy7VaatjFKUwEC3pGhdNAcbzGUOzH0GOeP4EcaA0DFIXaBupsmU4DpNENd54drrKu9cZD';
+
       delete this.pkceStore['state']; // Xóa codeVerifier sau khi dùng
 
       const savedData = {};
@@ -118,26 +117,43 @@ export class FacebookService {
       savedData['id'] = userResponse.data?.id || null;
       savedData['name'] = userResponse.data?.name || null;
       savedData['email'] = userResponse.data?.email || null;
-      console.log('ccc', accessToken);
+
       //Lay token vo han
-      const appsecretProof = crypto
-        .createHmac('sha256', this.facebookApi.clientSecret)
-        .update(accessToken)
-        .digest('hex');
-      console.log(appsecretProof);
-      const unlimitedTokenRes = await axios.post(
-        `${this.facebookApi.graphApiDomain}/${this.facebookApi.clientBusinessId}/system_user_access_tokens
-      ?appsecret_proof=${appsecretProof}&access_token=${accessToken}
-      &fetch_only=true`,
+      // const appsecretProof = crypto
+      //   .createHmac('sha256', this.facebookApi.clientSecret)
+      //   .update(accessToken)
+      //   .digest('hex');
+      // const unlimitedTokenRes = await axios.post(
+      //   `${this.facebookApi.graphApiDomain}/${this.facebookApi.clientBusinessId}/system_user_access_tokens?appsecret_proof=${appsecretProof}&access_token=${accessToken}&fetch_only=true`,
+      // );
+      // console.log('ccc1', unlimitedTokenRes);
+      // savedData['token'] = unlimitedTokenRes?.data?.access_token || null;
+
+      // lay token long-lived
+      const longLivedToken = await axios.get(
+        `${this.facebookApi.graphApiDomain}/oauth/access_token?grant_type=fb_exchange_token&client_id=${this.facebookApi.clientId}&client_secret=${this.facebookApi.clientSecret}&fb_exchange_token=${accessToken}`,
       );
-
-      console.log('ccc1', unlimitedTokenRes);
-      savedData['token'] = unlimitedTokenRes?.data?.access_token || null;
-
+      savedData['token'] = longLivedToken?.data?.access_token || null;
+      savedData['token_type'] = longLivedToken?.data?.token_type || null;
+      savedData['expires_in'] = longLivedToken?.data?.expires_in || null;
       await this.UserTokenModel.insertOne(savedData);
       res.json({ message: 'Login successful', user: userResponse.data });
     } catch (error) {
-      console.error(error);
+      // Kiểm tra nếu lỗi có phải là do response từ API
+      console.error('Data:', error.response.data); // Nội dung phản hồi lỗi từ API
+      // if (error.response) {
+      //   console.error('API Error:');
+      //   console.error('Status:', error.response.status); // Mã trạng thái HTTP
+
+      // } else if (error.request) {
+      //   // Lỗi khi không nhận được phản hồi từ máy chủ
+      //   console.error('No response received:');
+      //   console.error(error.request);
+      // } else {
+      //   // Các lỗi khác
+      //   console.error('Error in setup:', error.message);
+      // }
+      // console.error('Full Error:', error); // Log chi tiết về lỗi
       res.status(500).send('Authentication failed.');
     }
   }

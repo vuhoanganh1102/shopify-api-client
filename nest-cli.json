@@ -33,6 +33,51 @@
       "compilerOptions": {
         "tsConfigPath": "libs/facebook/tsconfig.lib.json"
       }
+    },
+    "schedules": {
+      "type": "library",
+      "root": "libs/schedules",
+      "entryFile": "index",
+      "sourceRoot": "libs/schedules/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/schedules/tsconfig.lib.json"
+      }
+    },
+    "queues": {
+      "type": "library",
+      "root": "libs/queues",
+      "entryFile": "index",
+      "sourceRoot": "libs/queues/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/queues/tsconfig.lib.json"
+      }
+    },
+    "caching": {
+      "type": "library",
+      "root": "libs/caching",
+      "entryFile": "index",
+      "sourceRoot": "libs/caching/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/caching/tsconfig.lib.json"
+      }
+    },
+    "helper": {
+      "type": "library",
+      "root": "libs/helper",
+      "entryFile": "index",
+      "sourceRoot": "libs/helper/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/helper/tsconfig.lib.json"
+      }
+    },
+    "mysql": {
+      "type": "library",
+      "root": "libs/mysql",
+      "entryFile": "index",
+      "sourceRoot": "libs/mysql/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/mysql/tsconfig.lib.json"
+      }
     }
   }
 }

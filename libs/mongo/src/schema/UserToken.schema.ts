@@ -16,6 +16,12 @@ export class UserToken {
 
   @Prop()
   email: string;
+
+  @Prop()
+  token_type: string;
+
+  @Prop()
+  expires_in: number;
 }
 
 export const UserTokenSchema = SchemaFactory.createForClass(UserToken);

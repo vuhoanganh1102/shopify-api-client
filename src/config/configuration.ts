@@ -1,3 +1,5 @@
+import { dataSource } from '@app/mysql/dataSource';
+
 export default () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
   database: {
@@ -5,3 +7,7 @@ export default () => ({
     port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
   },
 });
+
+export interface configDb {
+  TypeOrmModuleOptions: typeof dataSource;
+}

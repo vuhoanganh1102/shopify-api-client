@@ -35,6 +35,36 @@
       ],
       "@app/facebook/*": [
         "libs/facebook/src/*"
+      ],
+      "@app/schedules": [
+        "libs/schedules/src"
+      ],
+      "@app/schedules/*": [
+        "libs/schedules/src/*"
+      ],
+      "@app/queues": [
+        "libs/queues/src"
+      ],
+      "@app/queues/*": [
+        "libs/queues/src/*"
+      ],
+      "@app/caching": [
+        "libs/caching/src"
+      ],
+      "@app/caching/*": [
+        "libs/caching/src/*"
+      ],
+      "@app/helper": [
+        "libs/helper/src"
+      ],
+      "@app/helper/*": [
+        "libs/helper/src/*"
+      ],
+      "@app/mysql": [
+        "libs/mysql/src"
+      ],
+      "@app/mysql/*": [
+        "libs/mysql/src/*"
       ]
     }
   }

@@ -16,6 +16,16 @@
     "@app/mongo/(.*)": "<rootDir>/../libs/mongo/src/$1",
     "@app/mongo": "<rootDir>/../libs/mongo/src",
     "@app/facebook/(.*)": "<rootDir>/../libs/facebook/src/$1",
-    "@app/facebook": "<rootDir>/../libs/facebook/src"
+    "@app/facebook": "<rootDir>/../libs/facebook/src",
+    "@app/schedules/(.*)": "<rootDir>/../libs/schedules/src/$1",
+    "@app/schedules": "<rootDir>/../libs/schedules/src",
+    "@app/queues/(.*)": "<rootDir>/../libs/queues/src/$1",
+    "@app/queues": "<rootDir>/../libs/queues/src",
+    "@app/caching/(.*)": "<rootDir>/../libs/caching/src/$1",
+    "@app/caching": "<rootDir>/../libs/caching/src",
+    "@app/helper/(.*)": "<rootDir>/../libs/helper/src/$1",
+    "@app/helper": "<rootDir>/../libs/helper/src",
+    "@app/mysql/(.*)": "<rootDir>/../libs/mysql/src/$1",
+    "@app/mysql": "<rootDir>/../libs/mysql/src"
   }
 }
