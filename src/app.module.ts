@@ -8,6 +8,7 @@ import { ProductModule } from './product/product.module';
 import { WebhookModule } from './webhook/webhook.module';
 import { FacebookModule } from './facebook/facebook.module';
 // import { FacebookModule } from '@app/facebook';
+import { ProductFacebookModule } from './product-facebook/product-facebook.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { FacebookModule } from './facebook/facebook.module';
     ProductModule,
     WebhookModule,
     FacebookModule,
+    ProductFacebookModule,
   ],
   controllers: [AppController],
   providers: [AppService],
