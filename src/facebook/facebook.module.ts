@@ -4,6 +4,8 @@ import { FacebookService } from './facebook.service';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserToken, UserTokenSchema } from '@app/mongo/schema/UserToken.schema';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { FacebookMemberToken } from '@app/mysql/entities/facebookMemberToken.entity';
 
 @Module({
   imports: [
@@ -11,6 +13,7 @@ import { UserToken, UserTokenSchema } from '@app/mongo/schema/UserToken.schema';
     MongooseModule.forFeature([
       { name: UserToken.name, schema: UserTokenSchema },
     ]),
+    TypeOrmModule.forFeature([FacebookMemberToken]),
   ],
   controllers: [FacebookController],
   providers: [FacebookService],

@@ -4,6 +4,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { QueueChanel } from '@app/helper/enum/queueChanel';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FacebookMemberToken } from '@app/mysql/entities/facebookMemberToken.entity';
+import { FacebookMemberTokenModule } from 'src/facebook-member-token/facebook-member-token.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { FacebookMemberToken } from '@app/mysql/entities/facebookMemberToken.ent
 
       // removeOnFail: { count: 0 },
     }),
+    FacebookMemberTokenModule,
   ],
   providers: [QueuesService],
   exports: [QueuesService],

@@ -1,13 +1,9 @@
 import { IsString, IsOptional, IsInt } from 'class-validator';
 
-export class CreateFacebookMemberTokenDto {
+export class RefreshTokenDto {
   @IsOptional()
-  @IsString()
-  userId?: string;
-
-  @IsOptional()
-  @IsString()
-  name?: string;
+  @IsInt()
+  id?: number;
 
   @IsOptional()
   @IsString()

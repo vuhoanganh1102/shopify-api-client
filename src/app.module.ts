@@ -15,6 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSource } from '@app/mysql/dataSource';
 import { configDb } from './config/configuration';
 import { FacebookMemberTokenModule } from './facebook-member-token/facebook-member-token.module';
+import { QueuesModule } from '@app/queues';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { FacebookMemberTokenModule } from './facebook-member-token/facebook-memb
     ProductFacebookModule,
     SchedulesModule,
     FacebookMemberTokenModule,
+    QueuesModule,
     // QueuesModule,
   ],
   controllers: [AppController],

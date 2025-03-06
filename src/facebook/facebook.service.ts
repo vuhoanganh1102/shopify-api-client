@@ -8,6 +8,9 @@ import * as querystring from 'querystring';
 import { UserToken } from '@app/mongo/schema/UserToken.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FacebookMemberToken } from '@app/mysql/entities/facebookMemberToken.entity';
+import { Repository } from 'typeorm';
 
 interface facebookApiInstance {
   authorizationEndpoint: string;
@@ -29,6 +32,8 @@ export class FacebookService {
     private readonly configService: ConfigService,
     @InjectModel(UserToken.name)
     private UserTokenModel: Model<UserToken>,
+    @InjectRepository(FacebookMemberToken)
+    private readonly facebookMemberTokenRepo: Repository<FacebookMemberToken>,
   ) {
     this.facebookApiInstance = {
       authorizationEndpoint: this.configService.get<string>('AUTH_END_POINT'),
@@ -136,7 +141,7 @@ export class FacebookService {
       savedData['token'] = longLivedToken?.data?.access_token || null;
       savedData['token_type'] = longLivedToken?.data?.token_type || null;
       savedData['expires_in'] = longLivedToken?.data?.expires_in || null;
-      await this.UserTokenModel.insertOne(savedData);
+      await this.facebookMemberTokenRepo.insert(savedData);
       res.json({ message: 'Login successful', user: userResponse.data });
     } catch (error) {
       // Kiểm tra nếu lỗi có phải là do response từ API
