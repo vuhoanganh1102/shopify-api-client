@@ -35,6 +35,13 @@ export class FacebookMemberToken extends Init {
   expiresIn: number;
 
   @Column({
+    name: 'token_type',
+    type: 'varchar',
+    nullable: true,
+  })
+  tokenType: string;
+
+  @Column({
     name: 'email',
     type: 'varchar',
     length: 255,

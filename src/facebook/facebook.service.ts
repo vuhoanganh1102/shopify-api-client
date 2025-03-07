@@ -119,7 +119,7 @@ export class FacebookService {
           params: { fields: 'id,name,email' },
         },
       );
-      savedData['id'] = userResponse.data?.id || null;
+      savedData['userId'] = userResponse.data?.id || null;
       savedData['name'] = userResponse.data?.name || null;
       savedData['email'] = userResponse.data?.email || null;
 
@@ -139,8 +139,8 @@ export class FacebookService {
         `${this.facebookApi.graphApiDomain}/oauth/access_token?grant_type=fb_exchange_token&client_id=${this.facebookApi.clientId}&client_secret=${this.facebookApi.clientSecret}&fb_exchange_token=${accessToken}`,
       );
       savedData['token'] = longLivedToken?.data?.access_token || null;
-      savedData['token_type'] = longLivedToken?.data?.token_type || null;
-      savedData['expires_in'] = longLivedToken?.data?.expires_in || null;
+      savedData['tokenType'] = longLivedToken?.data?.token_type || null;
+      savedData['expiresIn'] = longLivedToken?.data?.expires_in || null;
       await this.facebookMemberTokenRepo.insert(savedData);
       res.json({ message: 'Login successful', user: userResponse.data });
     } catch (error) {

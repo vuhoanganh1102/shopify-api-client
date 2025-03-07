@@ -35,5 +35,6 @@ export class ProductService {
 
   async productCreateWebhook(req: Request, res: Response) {
     console.log(req.body);
+    console.log(res);
   }
 }

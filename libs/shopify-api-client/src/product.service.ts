@@ -16,7 +16,7 @@ export class ProductGraphQLService {
     if (productQuery.before) {
       customQuery += `before:${productQuery.before},`;
     }
-    console.log(customQuery);
+
     const queryOtion = `query {
     products(${customQuery}) {
       edges {
