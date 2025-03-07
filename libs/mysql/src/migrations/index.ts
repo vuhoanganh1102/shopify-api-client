@@ -1,4 +1,3 @@
-import { CreatFacebookTokenTable1741166831073 } from './1741166831073-creatFacebookTokenTable';
-import { AddPropTokenType1741244103709 } from './1741244103709-addPropTokenType';
+import { AddProductTables1741336210060 } from './1741336210060-addProductTables';
 
-export const migrations = [AddPropTokenType1741244103709];
+export const migrations = [AddProductTables1741336210060];

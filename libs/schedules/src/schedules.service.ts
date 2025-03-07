@@ -31,7 +31,10 @@ export class SchedulesService {
       dataBulkQueue.push({
         name: `${ScheduleName.REFRESH_TOKEN_CRON}:${data[i].id}`,
         data: data[i],
-        opts: {},
+        opts: {
+          removeOnComplete: true, // Xóa job khỏi Redis sau khi hoàn thành
+          removeOnFail: true, // Xóa job khỏi Redis nếu thất bại,
+        },
       });
       if (count === this.COUNT_ITEM_TOKEN) {
         await this.refreshTokenQueue.addBulk(dataBulkQueue);
