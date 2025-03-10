@@ -15,7 +15,7 @@ export class SchedulesService {
     @InjectQueue(QueueChanel.REFRESH_TOKEN)
     private readonly refreshTokenQueue: Queue,
   ) {}
-  @Cron('24 * * *', {
+  @Cron('0 0 * * *', {
     name: ScheduleName.REFRESH_TOKEN_CRON,
     timeZone: TimeZone.EUROPE_PARIS,
   })

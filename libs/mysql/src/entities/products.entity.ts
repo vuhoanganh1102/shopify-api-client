@@ -14,7 +14,16 @@ export class Products extends Init {
   @Column({ name: 'category', type: 'varchar', length: 255, nullable: true })
   category: string;
 
-  @Column({ name: 'pricing', type: 'decimal', precision: 10, scale: 2 })
+  @Column({ name: 'vendor', type: 'varchar', length: 255, nullable: true })
+  vendor: string;
+
+  @Column({
+    name: 'pricing',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
   pricing: number;
 
   @Column({ name: 'inventory', type: 'int', default: 0 })
@@ -62,14 +71,6 @@ export class Products extends Init {
     nullable: true,
   })
   themeTemplate: string;
-
-  @Column({
-    name: 'shopify_product_id',
-    type: 'varchar',
-    length: 255,
-    unique: true,
-  })
-  shopifyProductId: string;
 
   @OneToMany(() => ProductMedia, (pimg) => pimg.product)
   PostImage: ProductMedia[];

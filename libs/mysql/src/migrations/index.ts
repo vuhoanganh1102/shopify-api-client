@@ -1,3 +1,3 @@
-import { AddProductTables1741336210060 } from './1741336210060-addProductTables';
+import { InitTables1741596765670 } from './1741596765670-initTables';
 
-export const migrations = [AddProductTables1741336210060];
+export const migrations = [InitTables1741596765670];

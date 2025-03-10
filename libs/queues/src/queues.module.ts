@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FacebookMemberToken } from '@app/mysql/entities/facebookMemberToken.entity';
 import { FacebookMemberTokenModule } from 'src/facebook-member-token/facebook-member-token.module';
 import { RefreshTokenConsumer } from './RefreshToken.consumer';
+import { CreateProductWebhookConsumer } from './CreateProductWebhook.consumer';
 
 @Module({
   imports: [
@@ -16,10 +17,18 @@ import { RefreshTokenConsumer } from './RefreshToken.consumer';
         port: 6379,
       },
     }),
-    BullModule.registerQueue({ name: QueueChanel.REFRESH_TOKEN }),
+    BullModule.registerQueue(
+      { name: QueueChanel.REFRESH_TOKEN },
+      { name: QueueChanel.CREATE_PRODUCT_WEBHOOK },
+    ),
+
     FacebookMemberTokenModule,
   ],
-  providers: [QueuesService, RefreshTokenConsumer],
+  providers: [
+    QueuesService,
+    RefreshTokenConsumer,
+    CreateProductWebhookConsumer,
+  ],
   exports: [QueuesService],
 })
 export class QueuesModule {}
