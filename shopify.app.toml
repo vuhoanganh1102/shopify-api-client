@@ -1,0 +1,23 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "531ed90df7aa4fc1715f2456d6e1bc11"
+application_url = "https://738d-116-101-52-239.ngrok-free.app/shopify-api-client"
+embedded = true
+name = "fgfg"
+handle = "fgfg-5"
+
+[webhooks]
+api_version = "2025-01"
+
+[auth]
+redirect_urls = [
+  "https://738d-116-101-52-239.ngrok-free.app/shopify-api-client/auth/callback",
+  "https://738d-116-101-52-239.ngrok-free.app/shopify-api-client/auth/shopify/callback",
+  "https://738d-116-101-52-239.ngrok-free.app/shopify-api-client/api/auth/callback"
+]
+
+[pos]
+embedded = false
+
+[build]
+include_config_on_deploy = true

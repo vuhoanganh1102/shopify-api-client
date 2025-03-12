@@ -1,16 +1,8 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 import { Init } from './init.entity';
 
 @Entity('facebook_member_token')
 export class FacebookMemberToken extends Init {
-  @Column({
-    name: 'user_id',
-    type: 'varchar',
-    length: 255,
-    nullable: true,
-  })
-  userId: string;
-
   @Column({
     name: 'name',
     type: 'varchar',
@@ -48,4 +40,13 @@ export class FacebookMemberToken extends Init {
     nullable: true,
   })
   email: string;
+
+  @Index()
+  @Column({
+    name: 'shopify_user_id',
+    type: 'integer',
+    unsigned: true,
+    unique: true,
+  })
+  shopifyUserId: number;
 }

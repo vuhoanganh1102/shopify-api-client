@@ -1,3 +1,3 @@
-import { AddProductTables1741336210060 } from './1741336210060-addProductTables';
+import { FixingSyncTypeProp1741767999997 } from './1741767999997-fixingSyncTypeProp';
 
-export const migrations = [AddProductTables1741336210060];
+export const migrations = [FixingSyncTypeProp1741767999997];

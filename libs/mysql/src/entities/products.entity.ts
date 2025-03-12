@@ -1,7 +1,8 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { Init } from './init.entity';
 import { ProductMedia } from './productMedia.entity';
 import { Variants } from './variants.entity';
+import { SyncFacebookType } from '../../../helper/src/enum';
 
 @Entity('products')
 export class Products extends Init {
@@ -14,7 +15,16 @@ export class Products extends Init {
   @Column({ name: 'category', type: 'varchar', length: 255, nullable: true })
   category: string;
 
-  @Column({ name: 'pricing', type: 'decimal', precision: 10, scale: 2 })
+  @Column({ name: 'vendor', type: 'varchar', length: 255, nullable: true })
+  vendor: string;
+
+  @Column({
+    name: 'pricing',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+  })
   pricing: number;
 
   @Column({ name: 'inventory', type: 'int', default: 0 })
@@ -63,13 +73,22 @@ export class Products extends Init {
   })
   themeTemplate: string;
 
+  @Index()
   @Column({
-    name: 'shopify_product_id',
-    type: 'varchar',
-    length: 255,
+    name: 'user_id',
+    type: 'integer',
     unique: true,
+    nullable: true,
   })
-  shopifyProductId: string;
+  userId: number;
+
+  @Column({
+    name: 'sync_facebook',
+    type: 'integer',
+    nullable: true,
+    default: SyncFacebookType.SYNC,
+  })
+  syncFacebook: number;
 
   @OneToMany(() => ProductMedia, (pimg) => pimg.product)
   PostImage: ProductMedia[];

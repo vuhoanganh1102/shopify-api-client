@@ -16,6 +16,7 @@ import { dataSource } from '@app/mysql/dataSource';
 import { configDb } from './config/configuration';
 import { FacebookMemberTokenModule } from './facebook-member-token/facebook-member-token.module';
 import { QueuesModule } from '@app/queues';
+import { ShopifyOauthModule } from './shopify-oauth/shopify-oauth.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { QueuesModule } from '@app/queues';
     SchedulesModule,
     FacebookMemberTokenModule,
     QueuesModule,
+    ShopifyOauthModule,
     // QueuesModule,
   ],
   controllers: [AppController],

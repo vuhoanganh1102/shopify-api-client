@@ -9,3 +9,8 @@ export enum CommonStatus {
 }
 
 export enum Categories {}
+
+export enum SyncFacebookType {
+  SYNC = 0,
+  SYNCED = 1,
+}

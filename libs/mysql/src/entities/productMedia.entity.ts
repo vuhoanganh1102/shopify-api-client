@@ -17,7 +17,10 @@ export class ProductMedia extends Init {
   type: number;
 
   @ManyToOne(() => Products)
-  @JoinColumn({ name: 'product_id', referencedColumnName: 'id' })
+  @JoinColumn({
+    name: 'product_id',
+    referencedColumnName: 'id',
+  })
   product: Products;
 
   @Column({ name: 'status', type: 'tinyint', default: CommonStatus.ACTIVE })

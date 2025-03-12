@@ -17,7 +17,7 @@ export class WebhookController {
   constructor(private readonly webhookService: WebhookService) {}
 
   @Post()
-  async create(@Body() createWebhookDto: webhookCreator) {
+  async create(@Body() createWebhookDto: any) {
     return this.webhookService.createWebhook(createWebhookDto);
   }
 

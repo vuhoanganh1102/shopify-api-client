@@ -20,10 +20,10 @@ export class RefreshTokenConsumer extends WorkerHost {
   private queueNum = [];
   private ids = [];
   async process(job: Job<any, any, string>): Promise<any> {
+    console.log(`Processing job ${job?.id}`);
     const jobData = job.data;
     // const waiting = await job.queue.getWaiting(0, 8);
 
-    console.log(`Processing job ${job?.id}`);
     // this.queueNum.push({
     //   id: job.data.id,
     //   token: job.data.token,
