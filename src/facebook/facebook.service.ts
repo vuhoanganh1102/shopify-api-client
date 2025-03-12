@@ -24,6 +24,7 @@ interface facebookApiInstance {
   scope: string;
   clientBusinessId: string;
   fbDomain: string;
+  facebookCatalogProduct: string;
 }
 @Injectable()
 export class FacebookService {
@@ -47,6 +48,9 @@ export class FacebookService {
       scope: this.configService.get<string>('FB_SCOPE'),
       clientBusinessId: this.configService.get<string>('CLIENT_BUSINESS_ID'),
       fbDomain: this.configService.get<string>('FB_DOMAIN'),
+      facebookCatalogProduct: this.configService.get<string>(
+        'FACEBOOK_CATALOG_ID',
+      ),
     };
   }
 
@@ -67,22 +71,72 @@ export class FacebookService {
   }
   pkceStore = {};
   async checkAuth(req: Request, res: Response) {
-    const { codeVerifier, codeChallenge } = this.generatePKCE();
-    const state = crypto.randomBytes(16).toString('hex'); // Bảo mật CSRF
-    this.pkceStore['state'] = codeVerifier; // Lưu codeVerifier tạm thời
+    // check token
+    try {
+      const { id } = req.query;
+      if (id) {
+        const userFB = await this.facebookMemberTokenRepo.findOne({
+          where: { id: Number(id) },
+          select: ['token'],
+        });
+        const queyToken = querystring.stringify({
+          input_token: userFB.token,
+        });
+        const checkedToken = await axios.get(
+          `${this.facebookApiInstance.graphApiDomain}/debug_token?${queyToken}`,
+          {
+            headers: { Authorization: `Bearer ${userFB.token}` },
+          },
+        );
 
-    const params = querystring.stringify({
-      client_id: this.facebookApi.clientId,
-      redirect_uri: this.facebookApi.redirectUri,
-      response_type: 'code',
-      scope: this.facebookApi.scope,
-      code_challenge: codeChallenge,
-      code_challenge_method: 'S256',
-      state,
-    });
+        if (checkedToken.data.data.is_valid) {
+          const userResponse = await axios.get(
+            `${this.facebookApi.graphApiDomain}/me`,
+            {
+              headers: { Authorization: `Bearer ${userFB.token}` },
+              params: { fields: 'id,name,email' },
+            },
+          );
+          return res.json({
+            message: 'Login successful',
+            user: userResponse?.data,
+          });
+        }
+      }
+      const { codeVerifier, codeChallenge } = this.generatePKCE();
+      const state = crypto.randomBytes(16).toString('hex'); // Bảo mật CSRF
+      this.pkceStore['state'] = codeVerifier; // Lưu codeVerifier tạm thời
 
-    const authURL = `${this.facebookApi.fbDomain}/dialog/oauth?${params}`;
-    res.redirect(authURL);
+      const params = querystring.stringify({
+        client_id: this.facebookApi.clientId,
+        redirect_uri: this.facebookApi.redirectUri,
+        response_type: 'code',
+        scope: this.facebookApi.scope,
+        code_challenge: codeChallenge,
+        code_challenge_method: 'S256',
+        state,
+      });
+
+      const authURL = `${this.facebookApi.fbDomain}/dialog/oauth?${params}`;
+      return res.redirect(authURL);
+    } catch (error) {
+      // Kiểm tra nếu lỗi có phải là do response từ API
+      console.error('Data:', error?.response?.data); // Nội dung phản hồi lỗi từ API
+      // if (error.response) {
+      //   console.error('API Error:');
+      //   console.error('Status:', error.response.status); // Mã trạng thái HTTP
+
+      // } else if (error.request) {
+      //   // Lỗi khi không nhận được phản hồi từ máy chủ
+      //   console.error('No response received:');
+      //   console.error(error.request);
+      // } else {
+      //   // Các lỗi khác
+      //   console.error('Error in setup:', error.message);
+      // }
+      // console.error('Full Error:', error); // Log chi tiết về lỗi
+      res.status(500).send('Authentication failed.');
+    }
   }
 
   async getAccessToken(req: Request, res: Response) {
@@ -119,9 +173,12 @@ export class FacebookService {
           params: { fields: 'id,name,email' },
         },
       );
-      savedData['userId'] = userResponse.data?.id || null;
-      savedData['name'] = userResponse.data?.name || null;
-      savedData['email'] = userResponse.data?.email || null;
+      const existData = await this.facebookMemberTokenRepo.findOne({
+        where: { id: userResponse?.data?.id },
+      });
+
+      savedData['name'] = userResponse?.data?.name || null;
+      savedData['email'] = userResponse?.data?.email || null;
 
       //Lay token vo han
       // const appsecretProof = crypto
@@ -138,14 +195,25 @@ export class FacebookService {
       const longLivedToken = await axios.get(
         `${this.facebookApi.graphApiDomain}/oauth/access_token?grant_type=fb_exchange_token&client_id=${this.facebookApi.clientId}&client_secret=${this.facebookApi.clientSecret}&fb_exchange_token=${accessToken}`,
       );
+
       savedData['token'] = longLivedToken?.data?.access_token || null;
       savedData['tokenType'] = longLivedToken?.data?.token_type || null;
       savedData['expiresIn'] = longLivedToken?.data?.expires_in || null;
-      await this.facebookMemberTokenRepo.insert(savedData);
-      res.json({ message: 'Login successful', user: userResponse.data });
+
+      if (existData) {
+        await this.facebookMemberTokenRepo.update(
+          { id: existData.id },
+          savedData,
+        );
+      } else {
+        savedData['id'] = userResponse?.data?.id || null;
+        await this.facebookMemberTokenRepo.save(savedData);
+      }
+
+      res.json({ message: 'Login successful', user: userResponse?.data });
     } catch (error) {
       // Kiểm tra nếu lỗi có phải là do response từ API
-      console.error('Data:', error.response.data); // Nội dung phản hồi lỗi từ API
+      console.error('Data:', error?.response?.data); // Nội dung phản hồi lỗi từ API
       // if (error.response) {
       //   console.error('API Error:');
       //   console.error('Status:', error.response.status); // Mã trạng thái HTTP

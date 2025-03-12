@@ -7,6 +7,8 @@ import { FacebookMemberToken } from '@app/mysql/entities/facebookMemberToken.ent
 import { FacebookMemberTokenModule } from 'src/facebook-member-token/facebook-member-token.module';
 import { RefreshTokenConsumer } from './RefreshToken.consumer';
 import { CreateProductWebhookConsumer } from './CreateProductWebhook.consumer';
+import { DeleteProductWebhookConsumer } from './DeleteProductWebhook.consumer';
+import { ProductFacebookModule } from 'src/product-facebook/product-facebook.module';
 
 @Module({
   imports: [
@@ -20,14 +22,17 @@ import { CreateProductWebhookConsumer } from './CreateProductWebhook.consumer';
     BullModule.registerQueue(
       { name: QueueChanel.REFRESH_TOKEN },
       { name: QueueChanel.CREATE_PRODUCT_WEBHOOK },
+      { name: QueueChanel.DELETE_PRODUCT_WEBHOOK },
     ),
 
     FacebookMemberTokenModule,
+    ProductFacebookModule,
   ],
   providers: [
     QueuesService,
     RefreshTokenConsumer,
     CreateProductWebhookConsumer,
+    DeleteProductWebhookConsumer,
   ],
   exports: [QueuesService],
 })

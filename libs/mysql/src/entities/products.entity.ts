@@ -1,7 +1,8 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
 import { Init } from './init.entity';
 import { ProductMedia } from './productMedia.entity';
 import { Variants } from './variants.entity';
+import { SyncFacebookType } from '../../../helper/src/enum';
 
 @Entity('products')
 export class Products extends Init {
@@ -71,6 +72,23 @@ export class Products extends Init {
     nullable: true,
   })
   themeTemplate: string;
+
+  @Index()
+  @Column({
+    name: 'user_id',
+    type: 'integer',
+    unique: true,
+    nullable: true,
+  })
+  userId: number;
+
+  @Column({
+    name: 'sync_facebook',
+    type: 'integer',
+    nullable: true,
+    default: SyncFacebookType.SYNC,
+  })
+  syncFacebook: number;
 
   @OneToMany(() => ProductMedia, (pimg) => pimg.product)
   PostImage: ProductMedia[];

@@ -8,6 +8,11 @@ import {
   ProductCatalog,
   ProductCatalogSchema,
 } from '@app/mongo/schema/ProductCatalog.schema';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { FacebookMemberToken } from '@app/mysql/entities/facebookMemberToken.entity';
+import { Products } from '@app/mysql/entities/products.entity';
+import { ShopifyOauthGaurdModule } from '@app/helper/guard/guard.module';
+import { ShopifyMemberToken } from '@app/mysql/entities/shopifyMemberToken.enity';
 
 @Module({
   imports: [
@@ -16,8 +21,15 @@ import {
       { name: ProductCatalog.name, schema: ProductCatalogSchema },
     ]),
     FacebookModule,
+    TypeOrmModule.forFeature([
+      FacebookMemberToken,
+      Products,
+      ShopifyMemberToken,
+    ]),
+    ShopifyOauthGaurdModule,
   ],
   controllers: [ProductFacebookController],
   providers: [ProductFacebookService],
+  exports: [ProductFacebookService],
 })
 export class ProductFacebookModule {}

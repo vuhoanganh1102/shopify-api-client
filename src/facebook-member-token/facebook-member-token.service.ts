@@ -85,7 +85,7 @@ export class FacebookMemberTokenService {
     await this.facebookMemberTokenRepo.update(
       { id: token.id },
       {
-        userId: res?.data?.id,
+        id: res?.data?.id,
         token: res?.data?.token,
         expiresIn: res?.data.expires_in,
       },

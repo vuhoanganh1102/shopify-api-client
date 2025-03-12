@@ -1,3 +1,3 @@
-import { InitTables1741596765670 } from './1741596765670-initTables';
+import { FixingSyncTypeProp1741767999997 } from './1741767999997-fixingSyncTypeProp';
 
-export const migrations = [InitTables1741596765670];
+export const migrations = [FixingSyncTypeProp1741767999997];

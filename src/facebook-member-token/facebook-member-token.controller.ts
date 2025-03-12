@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { FacebookMemberTokenService } from './facebook-member-token.service';
 import { CreateFacebookMemberTokenDto } from './dto/create-facebook-member-token.dto';
 import { UpdateFacebookMemberTokenDto } from './dto/update-facebook-member-token.dto';
-
+import { ShopifyAuthGuard } from '@app/helper/guard/shopifyMember.guard';
+@UseGuards(ShopifyAuthGuard)
 @Controller('facebook-member-token')
 export class FacebookMemberTokenController {
   constructor(

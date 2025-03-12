@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductFacebookService } from './product-facebook.service';
 import { CreateProductFacebookDto } from './dto/create-product-facebook.dto';
 import { UpdateProductFacebookDto } from './dto/update-product-facebook.dto';
-
+import { ShopifyAuthGuard } from '@app/helper/guard/shopifyMember.guard';
+import { UserData } from '@app/helper/decorators/user.decorator';
+@UseGuards(ShopifyAuthGuard)
 @Controller('product-facebook')
 export class ProductFacebookController {
   constructor(
@@ -18,8 +21,8 @@ export class ProductFacebookController {
   ) {}
 
   @Post()
-  create(@Body() createProductFacebookDto: CreateProductFacebookDto) {
-    return this.productFacebookService.create(createProductFacebookDto);
+  create(@UserData() user: any) {
+    return this.productFacebookService.uploadProducts(user);
   }
 
   @Get()

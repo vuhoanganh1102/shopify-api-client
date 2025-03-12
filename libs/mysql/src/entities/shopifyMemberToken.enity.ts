@@ -1,8 +1,16 @@
-import { Column, Entity } from 'typeorm';
-import { Init } from './init.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('shopify_member_token')
-export class ShopifyMemberToken extends Init {
+export class ShopifyMemberToken {
+  @PrimaryGeneratedColumn({ name: 'id', type: 'bigint', unsigned: true })
+  id?: number;
+
   @Column({
     name: 'shop',
     type: 'varchar',
@@ -42,4 +50,10 @@ export class ShopifyMemberToken extends Init {
     nullable: true,
   })
   accessToken: string;
+
+  @UpdateDateColumn({ name: 'update_at', type: 'datetime', select: false })
+  updatedAt?: Date;
+
+  @CreateDateColumn({ name: 'created_at', type: 'datetime', select: false })
+  createdAt?: Date;
 }

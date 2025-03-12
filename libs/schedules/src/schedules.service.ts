@@ -2,13 +2,13 @@ import { QueueChanel } from '@app/helper/enum/queueChanel';
 import { ScheduleName } from '@app/helper/enum/scheduleName';
 import { TimeZone } from '@app/helper/enum/timeZone';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { Queue } from 'bullmq';
 import { FacebookMemberTokenService } from 'src/facebook-member-token/facebook-member-token.service';
 
 @Injectable()
-export class SchedulesService {
+export class SchedulesService implements OnModuleInit {
   private COUNT_ITEM_TOKEN = Number(process.env.COUNT_ITEM_TOKEN);
   constructor(
     private readonly facebookMemberTokenService: FacebookMemberTokenService,
@@ -49,5 +49,11 @@ export class SchedulesService {
     }
     console.log(`${ScheduleName.REFRESH_TOKEN_CRON} finish job.`);
     return {};
+  }
+
+  // Chạy ngay khi server khởi động - th server restart
+  onModuleInit() {
+    console.log('Server khởi động, chạy làm mới token ngay lập tức.');
+    this.refreshToken();
   }
 }

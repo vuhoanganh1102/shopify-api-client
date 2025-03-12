@@ -2,18 +2,22 @@ import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { QueueChanel } from '@app/helper/enum/queueChanel';
 
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { Response } from 'express';
+import { Injectable } from '@nestjs/common';
+
 import { EntityManager } from 'typeorm';
 import { Products } from '@app/mysql/entities/products.entity';
 import { Variants } from '@app/mysql/entities/variants.entity';
 import { ProductMedia } from '@app/mysql/entities/productMedia.entity';
 import { MediaType } from '@app/helper/enum';
+import { ProductFacebookService } from 'src/product-facebook/product-facebook.service';
 
 @Injectable()
 @Processor(QueueChanel.CREATE_PRODUCT_WEBHOOK) // limited 10 jobs is run in time
 export class CreateProductWebhookConsumer extends WorkerHost {
-  constructor(private readonly entityManager: EntityManager) {
+  constructor(
+    private readonly entityManager: EntityManager,
+    private readonly productFacebookService: ProductFacebookService,
+  ) {
     super();
   }
 
@@ -27,10 +31,10 @@ export class CreateProductWebhookConsumer extends WorkerHost {
   async processProductCreateWebhook(data: any) {
     const dataFormWebhook = data;
 
-    const creatorTransaction = await this.entityManager.transaction(
-      async (transaction) => {
+    await this.entityManager.transaction(async (transaction) => {
+      try {
         const productRepo = transaction.getRepository(Products);
-        await productRepo.save({
+        const saveProduct = await productRepo.save({
           id: dataFormWebhook.id,
           title: dataFormWebhook.title,
           description: dataFormWebhook.body_html,
@@ -43,14 +47,17 @@ export class CreateProductWebhookConsumer extends WorkerHost {
           productStatus: dataFormWebhook?.status,
           pricing: Number(dataFormWebhook?.price) || 0,
         });
-        if (dataFormWebhook?.variants?.length > 0) {
-          // const variant;
-          let quantity = 0;
-          const variantCreator = [];
-          dataFormWebhook?.variants.forEach((element) => {
-            quantity = quantity + element?.inventory_quantity;
 
-            const data = {
+        if (!saveProduct) {
+          throw new Error('Lưu sản phẩm thất bại');
+        }
+
+        if (dataFormWebhook?.variants?.length > 0) {
+          let quantity = 0;
+          const variantCreator = dataFormWebhook.variants.map((element) => {
+            quantity = quantity + element?.inventory_quantity || 0;
+
+            return {
               id: element?.id,
               barcode: element?.barcode || null,
               createdAt: element?.created_at,
@@ -65,32 +72,47 @@ export class CreateProductWebhookConsumer extends WorkerHost {
               oldInventoryQuantity: Number(element?.old_inventory_quantity),
               productId: dataFormWebhook.id,
             };
-            variantCreator.push(data);
           });
+
           const varRepo = transaction.getRepository(Variants);
-          await varRepo.save(variantCreator);
+          const saveVariants = await varRepo.save(variantCreator);
+
+          if (!saveVariants) {
+            throw new Error('Lưu biến thể sản phẩm thất bại');
+          }
         }
 
         if (dataFormWebhook?.images?.length > 0) {
-          const mediaDatas = [];
-          dataFormWebhook?.images.forEach((e) => {
-            const data = {
-              id: e?.id,
-              url: e?.src,
-              productId: dataFormWebhook.id,
-              createdAt: e?.created_at,
-              updatedAt: e?.updated_at,
-              type: MediaType.IMAGE,
-            };
-            mediaDatas.push(data);
-          });
+          const mediaDatas = dataFormWebhook.images.map((e) => ({
+            id: e?.id,
+            url: e?.src,
+            productId: dataFormWebhook.id,
+            createdAt: e?.created_at,
+            updatedAt: e?.updated_at,
+            type: MediaType.IMAGE,
+          }));
+
           const mediaRepo = transaction.getRepository(ProductMedia);
-          await mediaRepo.save(mediaDatas);
+          const saveMedia = await mediaRepo.save(mediaDatas);
+
+          if (!saveMedia) {
+            throw new Error('Lưu hình ảnh thất bại');
+          }
         }
 
-        return true;
-      },
-    );
+        return true; // Transaction thành công
+      } catch (error) {
+        console.error('Lỗi khi thực hiện transaction:', error.message);
+        throw error; // Transaction sẽ rollback nếu có lỗi
+      }
+    });
+
+    // if (tranResult) {
+    //   await this.productFacebookService.uploadProducts(
+    //     dataFormWebhook?.shopifyUser?.token,
+    //     [data],
+    //   );
+    // }
   }
   @OnWorkerEvent('drained')
   async jobDrained(): Promise<any> {
