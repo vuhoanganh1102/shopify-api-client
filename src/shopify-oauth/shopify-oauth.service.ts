@@ -98,13 +98,17 @@ export class ShopifyOauthService {
   /**
    * 2️⃣ Đổi Authorization Code lấy Access Token
    */
-  async getAccessToken(shop: string, code: string, user: any): Promise<string> {
+  async getAccessToken(
+    shop: string,
+    code: string,
+    user: any,
+  ): Promise<boolean> {
     const clientId = this.configService.get<string>('SHOPIFY_API_KEY');
     const clientSecret = this.configService.get<string>('SHOPIFY_API_SECRET');
-    console.log('user', user);
-    if (user) {
-      return 'Shopify OAuth thành công! Bạn có thể đóng tab này.';
-    }
+    // console.log('user', user);
+    // if (user) {
+    //   return 'Shopify OAuth thành công! Bạn có thể đóng tab này.';
+    // }
     try {
       const response = await axios.post(
         `https://${shop}/admin/oauth/access_token`,
@@ -132,7 +136,7 @@ export class ShopifyOauthService {
           accessToken: response.data.access_token,
           scope: response.data.scope,
         });
-      return '✅ Shopify OAuth thành công! Bạn có thể đóng tab này.';
+      return true;
     } catch (error) {
       this.logger.error('❌ Lỗi khi lấy Access Token từ Shopify', error);
       throw new Error('Failed to retrieve access token');

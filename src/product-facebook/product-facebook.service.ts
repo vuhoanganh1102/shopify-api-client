@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import axios from 'axios';
 import { Products } from '@app/mysql/entities/products.entity';
 import { SyncFacebookType } from '@app/helper/enum';
+import { ProductMedia } from '@app/mysql/entities/productMedia.entity';
 
 @Injectable()
 export class ProductFacebookService {
@@ -26,6 +27,8 @@ export class ProductFacebookService {
     private readonly facebookMemberTokenRepo: Repository<FacebookMemberToken>,
     @InjectRepository(Products)
     private readonly productsRepo: Repository<Products>,
+    @InjectRepository(ProductMedia)
+    private readonly productMediaRepo: Repository<ProductMedia>,
   ) {}
 
   async uploadProducts(user: any) {
@@ -47,7 +50,24 @@ export class ProductFacebookService {
       .where('id IN (:...ids)', { ids: products.map((p) => p.id) })
       .execute();
     const url = `${this.facebookService.facebookApi.graphApiDomain}/${this.facebookService.facebookApi.facebookCatalogProduct}/batch`;
-
+    const imagesRaw = await this.productMediaRepo
+      .createQueryBuilder('pm')
+      .select([
+        'pm.id id',
+        'pm.url url',
+        'pm.type type',
+        'pm.productId productId',
+      ])
+      .where('pm.productId IN (:...ids)', { ids: products.map((p) => p.id) })
+      .groupBy('pm.productId')
+      .getRawMany();
+    const images = {};
+    imagesRaw.forEach((e) => {
+      if (!images[e.productId]) {
+        images[e.productId] = []; // Khởi tạo mảng nếu chưa có
+      }
+      images[e.productId].push(e);
+    });
     // Định dạng sản phẩm theo yêu cầu của Facebook
     const formattedProducts = products.map((product) => ({
       method: 'CREATE',
@@ -57,9 +77,10 @@ export class ProductFacebookService {
         name: product.title,
         description: product.description || 'Không có mô tả',
         availability: product.quantity > 0 ? 'in stock' : 'out of stock',
-        price: product.pricing || 1,
+        price: product.pricing || 1000000,
         currency: 'VND',
         image_url:
+          images[product.id][0]?.url ||
           'https://cdn.shopify.com/s/files/1/0916/8086/6591/files/gao.jpg?v=1739852745',
         url: `https://yourwebsite.com/product/${product.id}`,
         brand: product.category || 'No Brand',

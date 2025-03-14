@@ -6,18 +6,19 @@ import { ProductQuery } from './interface/productApi';
 export class ProductGraphQLService {
   constructor(private readonly shopifyClient: ShopifyApiClientService) {}
   async getProduct(productQuery: ProductQuery) {
-    let customQuery = '';
-    if (productQuery.first) {
-      customQuery += `first:${productQuery.first},`;
-    }
-    if (productQuery.after) {
-      customQuery += `after:"${productQuery.after}",`;
-    }
-    if (productQuery.before) {
-      customQuery += `before:${productQuery.before},`;
-    }
+    try {
+      let customQuery = '';
+      if (productQuery.first) {
+        customQuery += `first:${productQuery.first},`;
+      }
+      if (productQuery.after) {
+        customQuery += `after:"${productQuery.after}",`;
+      }
+      if (productQuery.before) {
+        customQuery += `before:${productQuery.before},`;
+      }
 
-    const queryOtion = `query {
+      const queryOtion = `query {
     products(${customQuery}) {
       edges {
         node {
@@ -32,7 +33,10 @@ export class ProductGraphQLService {
       }
     }
   }`;
-    const { data } = await this.shopifyClient.Client.request(queryOtion, {});
-    return data;
+      const { data } = await this.shopifyClient.Client.request(queryOtion, {});
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
   }
 }

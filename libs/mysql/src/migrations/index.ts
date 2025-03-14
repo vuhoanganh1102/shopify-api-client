@@ -1,3 +1,3 @@
-import { FixingSyncTypeProp1741767999997 } from './1741767999997-fixingSyncTypeProp';
+import { FixPropUserId1741832411839 } from './1741832411839-fixPropUserId';
 
-export const migrations = [FixingSyncTypeProp1741767999997];
+export const migrations = [FixPropUserId1741832411839];

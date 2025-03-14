@@ -8,6 +8,8 @@ import { ProductFacebookModule } from 'src/product-facebook/product-facebook.mod
 import { ShopifyOauthGaurdModule } from '@app/helper/guard/guard.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ShopifyMemberToken } from '@app/mysql/entities/shopifyMemberToken.enity';
+import { Products } from '@app/mysql/entities/products.entity';
+import { ProductMedia } from '@app/mysql/entities/productMedia.entity';
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { ShopifyMemberToken } from '@app/mysql/entities/shopifyMemberToken.enity
       { name: QueueChanel.DELETE_PRODUCT_WEBHOOK },
     ),
     ShopifyOauthGaurdModule,
-    TypeOrmModule.forFeature([ShopifyMemberToken]),
+    TypeOrmModule.forFeature([ShopifyMemberToken, Products, ProductMedia]),
   ],
   controllers: [ProductController],
   providers: [ProductService],

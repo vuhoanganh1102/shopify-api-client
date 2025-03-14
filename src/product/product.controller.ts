@@ -14,11 +14,17 @@ import {
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ProductQuery } from '@app/shopify-api-client/interface/productApi';
-import { configPaging } from '@app/shopify-api-client/configQuery';
+import {
+  ProductQuery,
+  ProductQueryDB,
+} from '@app/shopify-api-client/interface/productApi';
+import {
+  assignPaging,
+  configPaging,
+} from '@app/shopify-api-client/configQuery';
 import { Request, Response } from 'express';
 import { ShopifyAuthGuard } from '@app/helper/guard/shopifyMember.guard';
-@UseGuards(ShopifyAuthGuard)
+// @UseGuards(ShopifyAuthGuard)
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
@@ -35,9 +41,10 @@ export class ProductController {
   async productDeleteWebhook(@Req() req: Request, @Res() res: Response) {
     return this.productService.productDelWebhook(req, res);
   }
+
   @Get()
-  findAll(@Query() query: ProductQuery) {
-    configPaging(query);
+  findAll(@Query() query: ProductQueryDB) {
+    assignPaging(query);
     return this.productService.getProduct(query);
   }
 

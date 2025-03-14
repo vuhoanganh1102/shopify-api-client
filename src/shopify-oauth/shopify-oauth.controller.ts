@@ -70,7 +70,11 @@ export class ShopifyOauthController {
         user,
       );
       // ✅ Điều hướng đến trang admin của app
-      return res.send(result);
+      if (result)
+        return res.redirect(
+          'https://admin.shopify.com/store/initalstore/apps/demo-shopi-2',
+        );
+      return res.send('fail to login!!');
     } catch (error) {
       return res.status(500).send('Lỗi khi xác thực Shopify App');
     }

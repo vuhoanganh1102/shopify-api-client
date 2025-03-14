@@ -13,6 +13,7 @@ import { FacebookMemberToken } from '@app/mysql/entities/facebookMemberToken.ent
 import { Products } from '@app/mysql/entities/products.entity';
 import { ShopifyOauthGaurdModule } from '@app/helper/guard/guard.module';
 import { ShopifyMemberToken } from '@app/mysql/entities/shopifyMemberToken.enity';
+import { ProductMedia } from '@app/mysql/entities/productMedia.entity';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ShopifyMemberToken } from '@app/mysql/entities/shopifyMemberToken.enity
       FacebookMemberToken,
       Products,
       ShopifyMemberToken,
+      ProductMedia,
     ]),
     ShopifyOauthGaurdModule,
   ],

@@ -10,6 +10,7 @@ import { Variants } from '@app/mysql/entities/variants.entity';
 import { ProductMedia } from '@app/mysql/entities/productMedia.entity';
 import { MediaType } from '@app/helper/enum';
 import { ProductFacebookService } from 'src/product-facebook/product-facebook.service';
+import { ShopifyMemberToken } from '@app/mysql/entities/shopifyMemberToken.enity';
 
 @Injectable()
 @Processor(QueueChanel.CREATE_PRODUCT_WEBHOOK) // limited 10 jobs is run in time
@@ -33,7 +34,14 @@ export class CreateProductWebhookConsumer extends WorkerHost {
 
     await this.entityManager.transaction(async (transaction) => {
       try {
+        const store = dataFormWebhook?.vendor.toLowerCase();
+        const shopifyMemberToken =
+          transaction.getRepository(ShopifyMemberToken);
+        const shopifyMember = await shopifyMemberToken.findOne({
+          where: { shop: `${store}.myshopify.com` },
+        });
         const productRepo = transaction.getRepository(Products);
+
         const saveProduct = await productRepo.save({
           id: dataFormWebhook.id,
           title: dataFormWebhook.title,
@@ -46,6 +54,7 @@ export class CreateProductWebhookConsumer extends WorkerHost {
           vendor: dataFormWebhook?.vendor,
           productStatus: dataFormWebhook?.status,
           pricing: Number(dataFormWebhook?.price) || 0,
+          userId: shopifyMember.id,
         });
 
         if (!saveProduct) {

@@ -2,15 +2,21 @@ import { ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductGraphQLService } from '@app/shopify-api-client/product.service';
-import { ProductQuery } from '@app/shopify-api-client/interface/productApi';
+import {
+  ProductQuery,
+  ProductQueryDB,
+  returnPaging,
+} from '@app/shopify-api-client/interface/productApi';
 import { Request, Response } from 'express';
-import { InjectEntityManager } from '@nestjs/typeorm';
-import { EntityManager } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
 
 import { InjectQueue } from '@nestjs/bullmq';
 import { QueueChanel } from '@app/helper/enum/queueChanel';
 import { Queue } from 'bullmq';
 import { ProductFacebookService } from 'src/product-facebook/product-facebook.service';
+import { Products } from '@app/mysql/entities/products.entity';
+import { ProductMedia } from '@app/mysql/entities/productMedia.entity';
 
 @Injectable()
 export class ProductService {
@@ -22,12 +28,16 @@ export class ProductService {
     private readonly createProductWebhookQueue: Queue,
     @InjectQueue(QueueChanel.DELETE_PRODUCT_WEBHOOK)
     private readonly deleteProductWebhookQueue: Queue,
+    @InjectRepository(Products)
+    private readonly productsRepo: Repository<Products>,
+    @InjectRepository(ProductMedia)
+    private readonly productMediaRepo: Repository<ProductMedia>,
   ) {}
   create(createProductDto: CreateProductDto) {
     return 'This action adds a new product';
   }
 
-  findAll() {
+  async findAll() {
     return `This action returns all product`;
   }
 
@@ -43,9 +53,36 @@ export class ProductService {
     return `This action removes a #${id} product`;
   }
 
-  async getProduct(productQuery: ProductQuery) {
-    const getDataApi = await this.productGraphQL.getProduct(productQuery);
-    return getDataApi;
+  async getProduct(query: ProductQueryDB) {
+    // const getDataApi = await this.productGraphQL.getProduct(productQuery);
+    // return getDataApi;
+    const productsQb = this.productsRepo
+      .createQueryBuilder('p')
+      .leftJoin(ProductMedia, 'pm', 'pm.productId = p.id')
+      .select([
+        'p.id id',
+        'p.title title',
+        'p.description description',
+        'p.vendor vendor',
+        'p.pricing pricing',
+        'p.quantity quantity',
+        'p.productStatus productStatus',
+        'p.userId userId',
+        `CONCAT('[', GROUP_CONCAT(JSON_OBJECT('id', pm.id, 'url',pm.url, 'type', pm.type)),']') images`,
+      ])
+      .groupBy('p.id');
+
+    if (query?.orderby)
+      productsQb.orderBy(`p.${query.sortBy}`, query.orderby || 'ASC');
+    const products = await productsQb
+      .limit(query.limit)
+      .offset(query.offset)
+      .getRawMany();
+    products.forEach((e) => {
+      e.images = JSON.parse(e.images);
+      if (e.images[0].id === null) e.images = null;
+    });
+    return returnPaging(products, products.length, query);
   }
 
   async productCreateWebhook(req: Request, res: Response) {

@@ -77,7 +77,6 @@ export class Products extends Init {
   @Column({
     name: 'user_id',
     type: 'integer',
-    unique: true,
     nullable: true,
   })
   userId: number;
