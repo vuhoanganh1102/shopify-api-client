@@ -7,7 +7,7 @@ import { Products } from './products.entity';
 
 @Entity('product_media')
 export class ProductMedia extends Init {
-  @Column({ name: 'url', type: 'varchar', length: 500 })
+  @Column({ name: 'url', type: 'longtext' })
   url: string;
 
   @Column({ name: 'product_id', type: 'bigint', unsigned: true })

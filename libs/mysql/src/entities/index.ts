@@ -4,6 +4,7 @@ import { FacebookMemberToken } from './facebookMemberToken.entity';
 import { ProductMedia } from './productMedia.entity';
 import { Products } from './products.entity';
 import { ShopifyMemberToken } from './shopifyMemberToken.enity';
+import { SyncDataFromShopifyToApp } from './syncDataFromShopifyToApp.entity';
 import { Variants } from './variants.entity';
 
 export const entities = [
@@ -15,4 +16,5 @@ export const entities = [
 
   Variants,
   ShopifyMemberToken,
+  SyncDataFromShopifyToApp,
 ];

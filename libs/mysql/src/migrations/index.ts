@@ -1,3 +1,3 @@
-import { FixPropUserId1741832411839 } from './1741832411839-fixPropUserId';
+import { FixUrl1742118582685 } from './1742118582685-fixUrl';
 
-export const migrations = [FixPropUserId1741832411839];
+export const migrations = [FixUrl1742118582685];
