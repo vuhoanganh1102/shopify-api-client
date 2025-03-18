@@ -1,5 +1,6 @@
 import { Categories } from './categories.entity';
 import { FacebookMemberToken } from './facebookMemberToken.entity';
+import { GoogleAccountToken } from './GoogleAccountToken.entity';
 
 import { ProductMedia } from './productMedia.entity';
 import { Products } from './products.entity';
@@ -17,4 +18,5 @@ export const entities = [
   Variants,
   ShopifyMemberToken,
   SyncDataFromShopifyToApp,
+  GoogleAccountToken,
 ];

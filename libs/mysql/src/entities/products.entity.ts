@@ -89,6 +89,13 @@ export class Products extends Init {
   })
   syncFacebook: number;
 
+  @Column({
+    name: 'gg_category_status',
+    type: 'varchar',
+    nullable: true,
+  })
+  ggCategoryStatus: string;
+
   @OneToMany(() => ProductMedia, (pimg) => pimg.product)
   PostImage: ProductMedia[];
 

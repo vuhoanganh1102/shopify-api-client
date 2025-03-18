@@ -1,3 +1,3 @@
-import { FixUrl1742118582685 } from './1742118582685-fixUrl';
+import { AddTble1742278502225 } from './1742278502225-addTble';
 
-export const migrations = [FixUrl1742118582685];
+export const migrations = [AddTble1742278502225];
