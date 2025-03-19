@@ -1,3 +1,3 @@
-import { AddTble1742278502225 } from './1742278502225-addTble';
+import { AddProp1742375907075 } from './1742375907075-addProp';
 
-export const migrations = [AddTble1742278502225];
+export const migrations = [AddProp1742375907075];

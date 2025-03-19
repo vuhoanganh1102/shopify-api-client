@@ -93,6 +93,7 @@ export class Products extends Init {
     name: 'gg_category_status',
     type: 'varchar',
     nullable: true,
+    default: 'pending',
   })
   ggCategoryStatus: string;
 

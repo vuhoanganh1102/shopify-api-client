@@ -59,6 +59,13 @@ export class GoogleAccountToken {
   })
   accessToken: string;
 
+  @Column({
+    name: 'expire_in',
+    type: 'bigint',
+    nullable: true,
+  })
+  expireIn: string;
+
   @UpdateDateColumn({ name: 'update_at', type: 'datetime', select: false })
   updatedAt?: Date;
 
