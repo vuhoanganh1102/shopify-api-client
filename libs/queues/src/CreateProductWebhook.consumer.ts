@@ -8,9 +8,10 @@ import { EntityManager } from 'typeorm';
 import { Products } from '@app/mysql/entities/products.entity';
 import { Variants } from '@app/mysql/entities/variants.entity';
 import { ProductMedia } from '@app/mysql/entities/productMedia.entity';
-import { MediaType } from '@app/helper/enum';
+import { ChanelStatus, ItemStatus, MediaType } from '@app/helper/enum';
 import { ProductFacebookService } from 'src/product-facebook/product-facebook.service';
 import { ShopifyMemberToken } from '@app/mysql/entities/shopifyMemberToken.enity';
+import { UpsertItemsToGoogle } from '@app/mysql/entities/upsertItemToGG.entity';
 
 @Injectable()
 @Processor(QueueChanel.CREATE_PRODUCT_WEBHOOK) // limited 10 jobs is run in time
@@ -60,13 +61,30 @@ export class CreateProductWebhookConsumer extends WorkerHost {
         if (!saveProduct) {
           throw new Error('Lưu sản phẩm thất bại');
         }
-
+        const upsertItemsToGG = transaction.getRepository(UpsertItemsToGoogle);
         if (dataFormWebhook?.variants?.length > 0) {
           let quantity = 0;
-          const variantCreator = dataFormWebhook.variants.map((element) => {
+          const variantCreator = [];
+          // dataFormWebhook.variants.map((element) => {
+          for (let i = 0; i < dataFormWebhook.variants.length; i++) {
+            const element = dataFormWebhook.variants[i];
             quantity = quantity + element?.inventory_quantity || 0;
 
-            return {
+            await upsertItemsToGG.save({
+              productId: dataFormWebhook.id,
+              shop: `${store}.myshopify.com`,
+              status: ItemStatus.ACTIVE,
+              chanel: ChanelStatus.GG,
+              variantId: element?.id,
+            });
+            await upsertItemsToGG.save({
+              productId: dataFormWebhook.id,
+              shop: `${store}.myshopify.com`,
+              status: ItemStatus.ACTIVE,
+              chanel: ChanelStatus.SHOPIFY,
+              variantId: element?.id,
+            });
+            variantCreator.push({
               id: element?.id,
               barcode: element?.barcode || null,
               createdAt: element?.created_at,
@@ -80,8 +98,8 @@ export class CreateProductWebhookConsumer extends WorkerHost {
               inventoryQuantity: Number(element?.inventory_quantity),
               oldInventoryQuantity: Number(element?.old_inventory_quantity),
               productId: dataFormWebhook.id,
-            };
-          });
+            });
+          }
 
           const varRepo = transaction.getRepository(Variants);
           const saveVariants = await varRepo.save(variantCreator);

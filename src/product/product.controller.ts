@@ -18,12 +18,9 @@ import {
   ProductQuery,
   ProductQueryDB,
 } from '@app/shopify-api-client/interface/productApi';
-import {
-  assignPaging,
-  configPaging,
-} from '@app/shopify-api-client/configQuery';
+import { assignPaging } from '@app/shopify-api-client/configQuery';
 import { Request, Response } from 'express';
-import { ShopifyAuthGuard } from '@app/helper/guard/shopifyMember.guard';
+
 // @UseGuards(ShopifyAuthGuard)
 @Controller('product')
 export class ProductController {

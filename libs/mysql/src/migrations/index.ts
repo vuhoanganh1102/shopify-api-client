@@ -1,3 +1,3 @@
-import { AddProp1742375907075 } from './1742375907075-addProp';
+import { AddProp1742443338968 } from './1742443338968-addProp';
 
-export const migrations = [AddProp1742375907075];
+export const migrations = [AddProp1742443338968];
